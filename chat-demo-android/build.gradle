@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+def ACCESS_TOKEN_SERVICE_URL = project.hasProperty('ACCESS_TOKEN_SERVICE_URL') ? "\""+project.getProperty('ACCESS_TOKEN_SERVICE_URL')+"\"" : "\"http://example.com/token\""
+
+dependencies {
+    compile 'com.android.support:support-v4:23.3.0+'
+    compile 'com.google.firebase:firebase-messaging:10.2.0' // FCM
+    compile 'com.google.android.gms:play-services-base:10.2.0'
+    compile 'uk.co.ribot:easyadapter:1.5.0@aar'
+    compile 'com.twilio:chat-android:1.0.9'
+    compile 'com.twilio:accessmanager-android:0.1.0'
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "com.twilio.chat.demo"
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionName "1.0"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildTypes {
+        release {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "ACCESS_TOKEN_SERVICE_URL", ACCESS_TOKEN_SERVICE_URL
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            buildConfigField "String", "ACCESS_TOKEN_SERVICE_URL", ACCESS_TOKEN_SERVICE_URL
+        }
+    }
+}
+
+// Keep an eye on SDK deprecations
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation" << "-Xdiags:verbose"
+}
+
+apply plugin: 'com.google.gms.google-services'
